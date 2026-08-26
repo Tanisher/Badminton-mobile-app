@@ -18,6 +18,9 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
+  /// Space reserved so AppBar [actions] sit left of the floating ⋯ control.
+  static const double _shellMenuClearance = 52;
+
   int _index = 0;
   final _backup = DatabaseBackupService();
 
@@ -80,15 +83,24 @@ class _HomeShellState extends State<HomeShell> {
             ),
           ),
         ),
+        // Floating backup control sits over the top-right of tab roots.
+        // Reserve AppBar action space so PDF/edit icons stay clickable.
         body: Stack(
           children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 280),
-              switchInCurve: Curves.easeOut,
-              switchOutCurve: Curves.easeIn,
-              child: KeyedSubtree(
-                key: ValueKey(_index),
-                child: pages[_index],
+            Theme(
+              data: Theme.of(context).copyWith(
+                appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                  actionsPadding: const EdgeInsets.only(right: _shellMenuClearance),
+                ),
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 280),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                child: KeyedSubtree(
+                  key: ValueKey(_index),
+                  child: pages[_index],
+                ),
               ),
             ),
             Positioned(
