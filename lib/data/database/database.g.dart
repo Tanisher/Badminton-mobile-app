@@ -6713,12 +6713,23 @@ class $TierPointValuesTable extends TierPointValues
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _groupWinPointsMeta = const VerificationMeta(
-    'groupWinPoints',
+  static const VerificationMeta _roundOf32PointsMeta = const VerificationMeta(
+    'roundOf32Points',
   );
   @override
-  late final GeneratedColumn<int> groupWinPoints = GeneratedColumn<int>(
-    'group_win_points',
+  late final GeneratedColumn<int> roundOf32Points = GeneratedColumn<int>(
+    'round_of32_points',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roundOf64PointsMeta = const VerificationMeta(
+    'roundOf64Points',
+  );
+  @override
+  late final GeneratedColumn<int> roundOf64Points = GeneratedColumn<int>(
+    'round_of64_points',
     aliasedName,
     false,
     type: DriftSqlType.int,
@@ -6733,7 +6744,8 @@ class $TierPointValuesTable extends TierPointValues
     semiPoints,
     quarterPoints,
     roundOf16Points,
-    groupWinPoints,
+    roundOf32Points,
+    roundOf64Points,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6810,16 +6822,27 @@ class $TierPointValuesTable extends TierPointValues
     } else if (isInserting) {
       context.missing(_roundOf16PointsMeta);
     }
-    if (data.containsKey('group_win_points')) {
+    if (data.containsKey('round_of32_points')) {
       context.handle(
-        _groupWinPointsMeta,
-        groupWinPoints.isAcceptableOrUnknown(
-          data['group_win_points']!,
-          _groupWinPointsMeta,
+        _roundOf32PointsMeta,
+        roundOf32Points.isAcceptableOrUnknown(
+          data['round_of32_points']!,
+          _roundOf32PointsMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_groupWinPointsMeta);
+      context.missing(_roundOf32PointsMeta);
+    }
+    if (data.containsKey('round_of64_points')) {
+      context.handle(
+        _roundOf64PointsMeta,
+        roundOf64Points.isAcceptableOrUnknown(
+          data['round_of64_points']!,
+          _roundOf64PointsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_roundOf64PointsMeta);
     }
     return context;
   }
@@ -6858,9 +6881,13 @@ class $TierPointValuesTable extends TierPointValues
         DriftSqlType.int,
         data['${effectivePrefix}round_of16_points'],
       )!,
-      groupWinPoints: attachedDatabase.typeMapping.read(
+      roundOf32Points: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}group_win_points'],
+        data['${effectivePrefix}round_of32_points'],
+      )!,
+      roundOf64Points: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}round_of64_points'],
       )!,
     );
   }
@@ -6873,17 +6900,14 @@ class $TierPointValuesTable extends TierPointValues
 
 class TierPointValue extends DataClass implements Insertable<TierPointValue> {
   final int id;
-
-  /// e.g. "Tier 1", "Tier 2", "Tier 3".
   final String tierLabel;
   final int winnerPoints;
   final int runnerUpPoints;
   final int semiPoints;
   final int quarterPoints;
   final int roundOf16Points;
-
-  /// Small bonus for each group-stage / round-robin win.
-  final int groupWinPoints;
+  final int roundOf32Points;
+  final int roundOf64Points;
   const TierPointValue({
     required this.id,
     required this.tierLabel,
@@ -6892,7 +6916,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
     required this.semiPoints,
     required this.quarterPoints,
     required this.roundOf16Points,
-    required this.groupWinPoints,
+    required this.roundOf32Points,
+    required this.roundOf64Points,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6904,7 +6929,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
     map['semi_points'] = Variable<int>(semiPoints);
     map['quarter_points'] = Variable<int>(quarterPoints);
     map['round_of16_points'] = Variable<int>(roundOf16Points);
-    map['group_win_points'] = Variable<int>(groupWinPoints);
+    map['round_of32_points'] = Variable<int>(roundOf32Points);
+    map['round_of64_points'] = Variable<int>(roundOf64Points);
     return map;
   }
 
@@ -6917,7 +6943,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
       semiPoints: Value(semiPoints),
       quarterPoints: Value(quarterPoints),
       roundOf16Points: Value(roundOf16Points),
-      groupWinPoints: Value(groupWinPoints),
+      roundOf32Points: Value(roundOf32Points),
+      roundOf64Points: Value(roundOf64Points),
     );
   }
 
@@ -6934,7 +6961,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
       semiPoints: serializer.fromJson<int>(json['semiPoints']),
       quarterPoints: serializer.fromJson<int>(json['quarterPoints']),
       roundOf16Points: serializer.fromJson<int>(json['roundOf16Points']),
-      groupWinPoints: serializer.fromJson<int>(json['groupWinPoints']),
+      roundOf32Points: serializer.fromJson<int>(json['roundOf32Points']),
+      roundOf64Points: serializer.fromJson<int>(json['roundOf64Points']),
     );
   }
   @override
@@ -6948,7 +6976,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
       'semiPoints': serializer.toJson<int>(semiPoints),
       'quarterPoints': serializer.toJson<int>(quarterPoints),
       'roundOf16Points': serializer.toJson<int>(roundOf16Points),
-      'groupWinPoints': serializer.toJson<int>(groupWinPoints),
+      'roundOf32Points': serializer.toJson<int>(roundOf32Points),
+      'roundOf64Points': serializer.toJson<int>(roundOf64Points),
     };
   }
 
@@ -6960,7 +6989,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
     int? semiPoints,
     int? quarterPoints,
     int? roundOf16Points,
-    int? groupWinPoints,
+    int? roundOf32Points,
+    int? roundOf64Points,
   }) => TierPointValue(
     id: id ?? this.id,
     tierLabel: tierLabel ?? this.tierLabel,
@@ -6969,7 +6999,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
     semiPoints: semiPoints ?? this.semiPoints,
     quarterPoints: quarterPoints ?? this.quarterPoints,
     roundOf16Points: roundOf16Points ?? this.roundOf16Points,
-    groupWinPoints: groupWinPoints ?? this.groupWinPoints,
+    roundOf32Points: roundOf32Points ?? this.roundOf32Points,
+    roundOf64Points: roundOf64Points ?? this.roundOf64Points,
   );
   TierPointValue copyWithCompanion(TierPointValuesCompanion data) {
     return TierPointValue(
@@ -6990,9 +7021,12 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
       roundOf16Points: data.roundOf16Points.present
           ? data.roundOf16Points.value
           : this.roundOf16Points,
-      groupWinPoints: data.groupWinPoints.present
-          ? data.groupWinPoints.value
-          : this.groupWinPoints,
+      roundOf32Points: data.roundOf32Points.present
+          ? data.roundOf32Points.value
+          : this.roundOf32Points,
+      roundOf64Points: data.roundOf64Points.present
+          ? data.roundOf64Points.value
+          : this.roundOf64Points,
     );
   }
 
@@ -7006,7 +7040,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
           ..write('semiPoints: $semiPoints, ')
           ..write('quarterPoints: $quarterPoints, ')
           ..write('roundOf16Points: $roundOf16Points, ')
-          ..write('groupWinPoints: $groupWinPoints')
+          ..write('roundOf32Points: $roundOf32Points, ')
+          ..write('roundOf64Points: $roundOf64Points')
           ..write(')'))
         .toString();
   }
@@ -7020,7 +7055,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
     semiPoints,
     quarterPoints,
     roundOf16Points,
-    groupWinPoints,
+    roundOf32Points,
+    roundOf64Points,
   );
   @override
   bool operator ==(Object other) =>
@@ -7033,7 +7069,8 @@ class TierPointValue extends DataClass implements Insertable<TierPointValue> {
           other.semiPoints == this.semiPoints &&
           other.quarterPoints == this.quarterPoints &&
           other.roundOf16Points == this.roundOf16Points &&
-          other.groupWinPoints == this.groupWinPoints);
+          other.roundOf32Points == this.roundOf32Points &&
+          other.roundOf64Points == this.roundOf64Points);
 }
 
 class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
@@ -7044,7 +7081,8 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
   final Value<int> semiPoints;
   final Value<int> quarterPoints;
   final Value<int> roundOf16Points;
-  final Value<int> groupWinPoints;
+  final Value<int> roundOf32Points;
+  final Value<int> roundOf64Points;
   const TierPointValuesCompanion({
     this.id = const Value.absent(),
     this.tierLabel = const Value.absent(),
@@ -7053,7 +7091,8 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
     this.semiPoints = const Value.absent(),
     this.quarterPoints = const Value.absent(),
     this.roundOf16Points = const Value.absent(),
-    this.groupWinPoints = const Value.absent(),
+    this.roundOf32Points = const Value.absent(),
+    this.roundOf64Points = const Value.absent(),
   });
   TierPointValuesCompanion.insert({
     this.id = const Value.absent(),
@@ -7063,14 +7102,16 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
     required int semiPoints,
     required int quarterPoints,
     required int roundOf16Points,
-    required int groupWinPoints,
+    required int roundOf32Points,
+    required int roundOf64Points,
   }) : tierLabel = Value(tierLabel),
        winnerPoints = Value(winnerPoints),
        runnerUpPoints = Value(runnerUpPoints),
        semiPoints = Value(semiPoints),
        quarterPoints = Value(quarterPoints),
        roundOf16Points = Value(roundOf16Points),
-       groupWinPoints = Value(groupWinPoints);
+       roundOf32Points = Value(roundOf32Points),
+       roundOf64Points = Value(roundOf64Points);
   static Insertable<TierPointValue> custom({
     Expression<int>? id,
     Expression<String>? tierLabel,
@@ -7079,7 +7120,8 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
     Expression<int>? semiPoints,
     Expression<int>? quarterPoints,
     Expression<int>? roundOf16Points,
-    Expression<int>? groupWinPoints,
+    Expression<int>? roundOf32Points,
+    Expression<int>? roundOf64Points,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -7089,7 +7131,8 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
       if (semiPoints != null) 'semi_points': semiPoints,
       if (quarterPoints != null) 'quarter_points': quarterPoints,
       if (roundOf16Points != null) 'round_of16_points': roundOf16Points,
-      if (groupWinPoints != null) 'group_win_points': groupWinPoints,
+      if (roundOf32Points != null) 'round_of32_points': roundOf32Points,
+      if (roundOf64Points != null) 'round_of64_points': roundOf64Points,
     });
   }
 
@@ -7101,7 +7144,8 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
     Value<int>? semiPoints,
     Value<int>? quarterPoints,
     Value<int>? roundOf16Points,
-    Value<int>? groupWinPoints,
+    Value<int>? roundOf32Points,
+    Value<int>? roundOf64Points,
   }) {
     return TierPointValuesCompanion(
       id: id ?? this.id,
@@ -7111,7 +7155,8 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
       semiPoints: semiPoints ?? this.semiPoints,
       quarterPoints: quarterPoints ?? this.quarterPoints,
       roundOf16Points: roundOf16Points ?? this.roundOf16Points,
-      groupWinPoints: groupWinPoints ?? this.groupWinPoints,
+      roundOf32Points: roundOf32Points ?? this.roundOf32Points,
+      roundOf64Points: roundOf64Points ?? this.roundOf64Points,
     );
   }
 
@@ -7139,8 +7184,11 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
     if (roundOf16Points.present) {
       map['round_of16_points'] = Variable<int>(roundOf16Points.value);
     }
-    if (groupWinPoints.present) {
-      map['group_win_points'] = Variable<int>(groupWinPoints.value);
+    if (roundOf32Points.present) {
+      map['round_of32_points'] = Variable<int>(roundOf32Points.value);
+    }
+    if (roundOf64Points.present) {
+      map['round_of64_points'] = Variable<int>(roundOf64Points.value);
     }
     return map;
   }
@@ -7155,7 +7203,8 @@ class TierPointValuesCompanion extends UpdateCompanion<TierPointValue> {
           ..write('semiPoints: $semiPoints, ')
           ..write('quarterPoints: $quarterPoints, ')
           ..write('roundOf16Points: $roundOf16Points, ')
-          ..write('groupWinPoints: $groupWinPoints')
+          ..write('roundOf32Points: $roundOf32Points, ')
+          ..write('roundOf64Points: $roundOf64Points')
           ..write(')'))
         .toString();
   }
@@ -15700,7 +15749,8 @@ typedef $$TierPointValuesTableCreateCompanionBuilder =
       required int semiPoints,
       required int quarterPoints,
       required int roundOf16Points,
-      required int groupWinPoints,
+      required int roundOf32Points,
+      required int roundOf64Points,
     });
 typedef $$TierPointValuesTableUpdateCompanionBuilder =
     TierPointValuesCompanion Function({
@@ -15711,7 +15761,8 @@ typedef $$TierPointValuesTableUpdateCompanionBuilder =
       Value<int> semiPoints,
       Value<int> quarterPoints,
       Value<int> roundOf16Points,
-      Value<int> groupWinPoints,
+      Value<int> roundOf32Points,
+      Value<int> roundOf64Points,
     });
 
 class $$TierPointValuesTableFilterComposer
@@ -15758,8 +15809,13 @@ class $$TierPointValuesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get groupWinPoints => $composableBuilder(
-    column: $table.groupWinPoints,
+  ColumnFilters<int> get roundOf32Points => $composableBuilder(
+    column: $table.roundOf32Points,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roundOf64Points => $composableBuilder(
+    column: $table.roundOf64Points,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -15808,8 +15864,13 @@ class $$TierPointValuesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get groupWinPoints => $composableBuilder(
-    column: $table.groupWinPoints,
+  ColumnOrderings<int> get roundOf32Points => $composableBuilder(
+    column: $table.roundOf32Points,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get roundOf64Points => $composableBuilder(
+    column: $table.roundOf64Points,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -15854,8 +15915,13 @@ class $$TierPointValuesTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get groupWinPoints => $composableBuilder(
-    column: $table.groupWinPoints,
+  GeneratedColumn<int> get roundOf32Points => $composableBuilder(
+    column: $table.roundOf32Points,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get roundOf64Points => $composableBuilder(
+    column: $table.roundOf64Points,
     builder: (column) => column,
   );
 }
@@ -15904,7 +15970,8 @@ class $$TierPointValuesTableTableManager
                 Value<int> semiPoints = const Value.absent(),
                 Value<int> quarterPoints = const Value.absent(),
                 Value<int> roundOf16Points = const Value.absent(),
-                Value<int> groupWinPoints = const Value.absent(),
+                Value<int> roundOf32Points = const Value.absent(),
+                Value<int> roundOf64Points = const Value.absent(),
               }) => TierPointValuesCompanion(
                 id: id,
                 tierLabel: tierLabel,
@@ -15913,7 +15980,8 @@ class $$TierPointValuesTableTableManager
                 semiPoints: semiPoints,
                 quarterPoints: quarterPoints,
                 roundOf16Points: roundOf16Points,
-                groupWinPoints: groupWinPoints,
+                roundOf32Points: roundOf32Points,
+                roundOf64Points: roundOf64Points,
               ),
           createCompanionCallback:
               ({
@@ -15924,7 +15992,8 @@ class $$TierPointValuesTableTableManager
                 required int semiPoints,
                 required int quarterPoints,
                 required int roundOf16Points,
-                required int groupWinPoints,
+                required int roundOf32Points,
+                required int roundOf64Points,
               }) => TierPointValuesCompanion.insert(
                 id: id,
                 tierLabel: tierLabel,
@@ -15933,7 +16002,8 @@ class $$TierPointValuesTableTableManager
                 semiPoints: semiPoints,
                 quarterPoints: quarterPoints,
                 roundOf16Points: roundOf16Points,
-                groupWinPoints: groupWinPoints,
+                roundOf32Points: roundOf32Points,
+                roundOf64Points: roundOf64Points,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

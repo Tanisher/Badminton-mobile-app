@@ -49,7 +49,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration {
@@ -339,40 +339,91 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(tierPointValues);
           await _seedDefaultTier();
         }
+
+        // v11: SSL tiers — R32/R64 columns; Premier→Development point matrix.
+        if (from < 11) {
+          await customStatement('DROP TABLE IF EXISTS tier_point_values;');
+          await m.createTable(tierPointValues);
+          await _seedDefaultTier();
+          // Remap legacy tournament.tier free-text values.
+          await customStatement(
+            "UPDATE tournaments SET tier = 'Premier' "
+            "WHERE lower(tier) IN ('tier 1', 't1', 't1 – premier', 'premier');",
+          );
+          await customStatement(
+            "UPDATE tournaments SET tier = 'Major' "
+            "WHERE lower(tier) IN ('tier 2', 't2', 't2 – major', 'major');",
+          );
+          await customStatement(
+            "UPDATE tournaments SET tier = 'Open' "
+            "WHERE lower(tier) IN ('tier 3', 't3', 't3 – open', 'open');",
+          );
+          await customStatement(
+            "UPDATE tournaments SET tier = 'Challenge' "
+            "WHERE lower(tier) IN ('tier 4', 't4', 't4 – challenge', 'challenge');",
+          );
+          await customStatement(
+            "UPDATE tournaments SET tier = 'Development' "
+            "WHERE lower(tier) IN ('tier 5', 't5', 't5 – development', 'development');",
+          );
+        }
       },
     );
   }
 
-  /// Sensible badminton-like defaults for Tier 1 / 2 / 3.
+  /// SSL stage points: Premier / Major / Open / Challenge / Development.
   Future<void> _seedDefaultTier() async {
     await batch((b) {
       b.insertAll(tierPointValues, [
         TierPointValuesCompanion.insert(
-          tierLabel: 'Tier 1',
-          winnerPoints: 1000,
-          runnerUpPoints: 600,
-          semiPoints: 360,
-          quarterPoints: 180,
-          roundOf16Points: 90,
-          groupWinPoints: 10,
+          tierLabel: 'Premier',
+          winnerPoints: 525,
+          runnerUpPoints: 440,
+          semiPoints: 365,
+          quarterPoints: 290,
+          roundOf16Points: 190,
+          roundOf32Points: 110,
+          roundOf64Points: 41,
         ),
         TierPointValuesCompanion.insert(
-          tierLabel: 'Tier 2',
-          winnerPoints: 500,
-          runnerUpPoints: 300,
-          semiPoints: 180,
-          quarterPoints: 90,
-          roundOf16Points: 45,
-          groupWinPoints: 5,
+          tierLabel: 'Major',
+          winnerPoints: 425,
+          runnerUpPoints: 355,
+          semiPoints: 293,
+          quarterPoints: 230,
+          roundOf16Points: 156,
+          roundOf32Points: 86,
+          roundOf64Points: 33,
         ),
         TierPointValuesCompanion.insert(
-          tierLabel: 'Tier 3',
-          winnerPoints: 250,
-          runnerUpPoints: 150,
-          semiPoints: 90,
-          quarterPoints: 45,
-          roundOf16Points: 20,
-          groupWinPoints: 3,
+          tierLabel: 'Open',
+          winnerPoints: 350,
+          runnerUpPoints: 293,
+          semiPoints: 243,
+          quarterPoints: 192,
+          roundOf16Points: 130,
+          roundOf32Points: 72,
+          roundOf64Points: 27,
+        ),
+        TierPointValuesCompanion.insert(
+          tierLabel: 'Challenge',
+          winnerPoints: 283,
+          runnerUpPoints: 236,
+          semiPoints: 195,
+          quarterPoints: 153,
+          roundOf16Points: 100,
+          roundOf32Points: 58,
+          roundOf64Points: 21,
+        ),
+        TierPointValuesCompanion.insert(
+          tierLabel: 'Development',
+          winnerPoints: 190,
+          runnerUpPoints: 157,
+          semiPoints: 130,
+          quarterPoints: 102,
+          roundOf16Points: 67,
+          roundOf32Points: 39,
+          roundOf64Points: 14,
         ),
       ]);
     });

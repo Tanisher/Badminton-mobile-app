@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../app/app_theme.dart';
 
-/// Branded first screen — one composition: brand, line, CTA, court atmosphere.
+/// Branded first screen — one composition: brand, line, CTA, SSL atmosphere.
 class LandingHomeScreen extends StatefulWidget {
   const LandingHomeScreen({
     super.key,
@@ -68,7 +68,7 @@ class _LandingHomeScreenState extends State<LandingHomeScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const _GoldCourtBackdrop(),
+          const _SslCourtBackdrop(),
           CustomPaint(painter: _CourtLinesPainter()),
           SafeArea(
             child: Padding(
@@ -93,7 +93,7 @@ class _LandingHomeScreenState extends State<LandingHomeScreen>
                         child: ScaleTransition(
                           scale: _iconScale,
                           child: Image.asset(
-                            'assets/branding/badminton_icon.png',
+                            'assets/branding/ssl_logo.png',
                             width: 112,
                             height: 112,
                           ),
@@ -101,18 +101,18 @@ class _LandingHomeScreenState extends State<LandingHomeScreen>
                       ),
                       const SizedBox(height: 28),
                       Text(
-                        'Badminton\nManager',
+                        'Super Smash\nLeague Manager',
                         style: GoogleFonts.outfit(
-                          fontSize: 48,
-                          height: 1.02,
+                          fontSize: 40,
+                          height: 1.05,
                           fontWeight: FontWeight.w700,
                           color: AppTheme.ink,
-                          letterSpacing: -1.2,
+                          letterSpacing: -1.0,
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Run your tournament day offline — players, draws, scores, rankings.',
+                        'Run Super Smash League tournaments offline — players, draws, scores, rankings.',
                         style: GoogleFonts.dmSans(
                           fontSize: 17,
                           height: 1.45,
@@ -126,7 +126,7 @@ class _LandingHomeScreenState extends State<LandingHomeScreen>
                           onPressed: widget.onOpenTournaments,
                           style: FilledButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: AppTheme.goldDeep,
+                            backgroundColor: AppTheme.primary,
                             foregroundColor: Colors.white,
                           ),
                           child: const Text('Start with tournaments'),
@@ -139,9 +139,9 @@ class _LandingHomeScreenState extends State<LandingHomeScreen>
                           onPressed: widget.onOpenPlayers,
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            foregroundColor: AppTheme.goldDeep,
+                            foregroundColor: AppTheme.primary,
                             side: const BorderSide(
-                              color: AppTheme.goldDeep,
+                              color: AppTheme.primary,
                               width: 1.5,
                             ),
                           ),
@@ -161,8 +161,9 @@ class _LandingHomeScreenState extends State<LandingHomeScreen>
   }
 }
 
-class _GoldCourtBackdrop extends StatelessWidget {
-  const _GoldCourtBackdrop();
+/// Poster-inspired red / green / gold wash (readable dark ink on top).
+class _SslCourtBackdrop extends StatelessWidget {
+  const _SslCourtBackdrop();
 
   @override
   Widget build(BuildContext context) {
@@ -172,12 +173,12 @@ class _GoldCourtBackdrop extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFFFFFCF3),
-            Color(0xFFF7E4A0),
-            Color(0xFFE8C547),
-            Color(0xFFC9A227),
+            Color(0xFFFFFBF5),
+            Color(0xFFF5E6A8),
+            Color(0xFFB8D9B5),
+            Color(0xFFD4A0A0),
           ],
-          stops: [0.0, 0.35, 0.72, 1.0],
+          stops: [0.0, 0.32, 0.68, 1.0],
         ),
       ),
     );

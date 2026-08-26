@@ -412,23 +412,42 @@ class FixtureRepository {
     if (participants.isEmpty) return participants;
 
     final rankingRepo = RankingRepository(_db);
-    final rankings = await rankingRepo.computePlayerRankingPoints(
-      eventType: eventType,
-    );
-    final pointsByPlayer = {
-      for (final r in rankings) r.playerId: r.totalPoints,
-    };
-
     final scoreByParticipant = <int, int>{};
     var anyRanked = false;
-    for (final p in participants) {
-      final playerIds = await _playerIdsForParticipant(p);
-      final score = playerIds.fold<int>(
-        0,
-        (sum, id) => sum + (pointsByPlayer[id] ?? 0),
+
+    final isDoubles = eventType == TournamentEventType.md ||
+        eventType == TournamentEventType.wd ||
+        eventType == TournamentEventType.xd;
+
+    if (isDoubles) {
+      final rankings = await rankingRepo.computePartnershipRankingPoints(
+        eventType: eventType,
       );
-      scoreByParticipant[p.id] = score;
-      if (score > 0) anyRanked = true;
+      final pointsByTeam = {
+        for (final r in rankings) r.individualTeamId: r.totalPoints,
+      };
+      for (final p in participants) {
+        final teamId = p.individualTeamId;
+        final score = teamId == null ? 0 : (pointsByTeam[teamId] ?? 0);
+        scoreByParticipant[p.id] = score;
+        if (score > 0) anyRanked = true;
+      }
+    } else {
+      final rankings = await rankingRepo.computePlayerRankingPoints(
+        eventType: eventType,
+      );
+      final pointsByPlayer = {
+        for (final r in rankings) r.playerId: r.totalPoints,
+      };
+      for (final p in participants) {
+        final playerIds = await _playerIdsForParticipant(p);
+        final score = playerIds.fold<int>(
+          0,
+          (sum, id) => sum + (pointsByPlayer[id] ?? 0),
+        );
+        scoreByParticipant[p.id] = score;
+        if (score > 0) anyRanked = true;
+      }
     }
 
     if (anyRanked) {

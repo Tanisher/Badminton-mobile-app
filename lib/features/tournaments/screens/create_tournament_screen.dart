@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../data/repositories/ranking_repository.dart';
 import '../../../data/repositories/tournament_repository.dart';
 import '../providers.dart';
 import 'tournament_detail_screen.dart';
@@ -20,7 +21,6 @@ class _CreateTournamentScreenState
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _venueController = TextEditingController();
-  final _tierController = TextEditingController();
   final _courtsController = TextEditingController(text: '1');
   final _groupsController = TextEditingController(text: '2');
   final _qualifiersController = TextEditingController(text: '2');
@@ -28,6 +28,7 @@ class _CreateTournamentScreenState
   DateTime? _date;
   String _category = TournamentCategory.individual;
   String _format = TournamentFormat.knockout;
+  String _tier = SslTiers.open;
   String _knockoutStartStage = KnockoutStartStage.quarterfinal;
   final Set<String> _selectedEvents = {};
   bool _hasBronzeMedalMatch = true;
@@ -38,7 +39,6 @@ class _CreateTournamentScreenState
   void dispose() {
     _nameController.dispose();
     _venueController.dispose();
-    _tierController.dispose();
     _courtsController.dispose();
     _groupsController.dispose();
     _qualifiersController.dispose();
@@ -99,19 +99,18 @@ class _CreateTournamentScreenState
               ),
             ),
             const SizedBox(height: 12),
-            TextFormField(
-              controller: _tierController,
-              textCapitalization: TextCapitalization.words,
+            DropdownButtonFormField<String>(
+              initialValue: _tier,
               decoration: const InputDecoration(
                 labelText: 'Tier *',
-                hintText: 'e.g. Tier 1',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Tier is required';
-                }
-                return null;
+              items: [
+                for (final t in SslTiers.all)
+                  DropdownMenuItem(value: t, child: Text(t)),
+              ],
+              onChanged: (v) {
+                if (v != null) setState(() => _tier = v);
               },
             ),
             const SizedBox(height: 12),
@@ -358,7 +357,7 @@ class _CreateTournamentScreenState
             name: _nameController.text,
             date: _date!,
             venue: _venueController.text,
-            tier: _tierController.text,
+            tier: _tier,
             category: _category,
             format: _format,
             numberOfCourts: int.parse(_courtsController.text),

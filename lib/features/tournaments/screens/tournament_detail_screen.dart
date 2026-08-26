@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../data/repositories/ranking_repository.dart';
 import '../../../data/repositories/tournament_repository.dart';
 import '../providers.dart';
 import '../widgets/event_participants_panel.dart';
@@ -195,10 +196,10 @@ class TournamentDetailScreen extends ConsumerWidget {
     final t = details.tournament;
     final nameCtrl = TextEditingController(text: t.name);
     final venueCtrl = TextEditingController(text: t.venue ?? '');
-    final tierCtrl = TextEditingController(text: t.tier);
     final courtsCtrl = TextEditingController(text: '${t.numberOfCourts}');
     var bronze = t.hasBronzeMedalMatch;
     var date = t.date;
+    var tier = SslTiers.all.contains(t.tier) ? t.tier : SslTiers.open;
 
     final saved = await showDialog<bool>(
       context: context,
@@ -219,11 +220,16 @@ class TournamentDetailScreen extends ConsumerWidget {
                       controller: venueCtrl,
                       decoration: const InputDecoration(labelText: 'Venue'),
                     ),
-                    TextField(
-                      controller: tierCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Tier (e.g. Tier 1)',
-                      ),
+                    DropdownButtonFormField<String>(
+                      initialValue: tier,
+                      decoration: const InputDecoration(labelText: 'Tier'),
+                      items: [
+                        for (final label in SslTiers.all)
+                          DropdownMenuItem(value: label, child: Text(label)),
+                      ],
+                      onChanged: (v) {
+                        if (v != null) setState(() => tier = v);
+                      },
                     ),
                     TextField(
                       controller: courtsCtrl,
@@ -275,7 +281,6 @@ class TournamentDetailScreen extends ConsumerWidget {
     if (saved != true) {
       nameCtrl.dispose();
       venueCtrl.dispose();
-      tierCtrl.dispose();
       courtsCtrl.dispose();
       return;
     }
@@ -287,7 +292,7 @@ class TournamentDetailScreen extends ConsumerWidget {
             name: nameCtrl.text,
             date: date,
             venue: venueCtrl.text,
-            tier: tierCtrl.text,
+            tier: tier,
             category: t.category,
             format: t.format,
             numberOfCourts: int.parse(courtsCtrl.text),
@@ -311,7 +316,6 @@ class TournamentDetailScreen extends ConsumerWidget {
     } finally {
       nameCtrl.dispose();
       venueCtrl.dispose();
-      tierCtrl.dispose();
       courtsCtrl.dispose();
     }
   }

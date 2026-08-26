@@ -49,14 +49,14 @@ class _HomeShellState extends State<HomeShell> {
               padding: const EdgeInsets.all(16),
               children: [
                 Text(
-                  'Badminton Manager',
+                  'Super Smash League Manager',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Offline data tools',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.goldDeep.withValues(alpha: 0.65),
+                        color: AppTheme.primary.withValues(alpha: 0.65),
                       ),
                 ),
                 const SizedBox(height: 24),

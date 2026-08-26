@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Golden court branding for Badminton Manager.
+/// Super Smash League branding — red / green / gold from the SSL poster.
 abstract final class AppTheme {
-  static const Color goldDeep = Color(0xFF8A6A12);
-  static const Color gold = Color(0xFFC9A227);
-  static const Color goldBright = Color(0xFFE0B83A);
-  static const Color ivory = Color(0xFFFFFBF0);
-  static const Color mist = Color(0xFFFFF8E7);
-  static const Color ink = Color(0xFF2A2208);
+  /// Deep maroon primary (poster titles, filled buttons).
+  static const Color primary = Color(0xFF8B1E1E);
 
-  /// Kept for call sites that still reference the old name.
-  static const Color courtGreen = goldDeep;
+  /// Bright sports green (secondary titles, nav indicator).
+  static const Color secondary = Color(0xFF2E9B3C);
+
+  /// Medal / star gold accent.
+  static const Color accent = Color(0xFFE8B923);
+
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceMuted = Color(0xFFF7F7F5);
+  static const Color ink = Color(0xFF1A1A1A);
+
+  /// Legacy aliases — map to SSL primary for call-site compatibility.
+  static const Color goldDeep = primary;
+  static const Color gold = accent;
+  static const Color goldBright = accent;
+  static const Color ivory = surface;
+  static const Color mist = surfaceMuted;
+  static const Color courtGreen = primary;
 
   static ThemeData light() {
     final base = ColorScheme.fromSeed(
-      seedColor: gold,
-      primary: goldDeep,
-      secondary: goldBright,
-      surface: mist,
+      seedColor: primary,
+      primary: primary,
+      secondary: secondary,
+      surface: surface,
       brightness: Brightness.light,
     );
 
@@ -45,19 +56,23 @@ abstract final class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: base.copyWith(
-        primary: goldDeep,
+        primary: primary,
         onPrimary: Colors.white,
-        secondary: gold,
+        secondary: secondary,
         onSecondary: Colors.white,
-        primaryContainer: gold,
+        tertiary: accent,
+        onTertiary: ink,
+        primaryContainer: const Color(0xFFB33A3A),
         onPrimaryContainer: Colors.white,
-        secondaryContainer: goldBright,
-        onSecondaryContainer: Colors.white,
+        secondaryContainer: const Color(0xFFA8D5AE),
+        onSecondaryContainer: ink,
+        surface: surface,
+        onSurface: ink,
       ),
-      scaffoldBackgroundColor: mist,
+      scaffoldBackgroundColor: surfaceMuted,
       textTheme: textTheme,
       appBarTheme: AppBarTheme(
-        backgroundColor: goldDeep,
+        backgroundColor: primary,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
@@ -71,20 +86,20 @@ abstract final class AppTheme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: Colors.white.withValues(alpha: 0.94),
-        indicatorColor: gold.withValues(alpha: 0.22),
+        indicatorColor: secondary.withValues(alpha: 0.22),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return GoogleFonts.dmSans(
             fontSize: 12,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            color: selected ? goldDeep : ink.withValues(alpha: 0.5),
+            color: selected ? primary : ink.withValues(alpha: 0.5),
           );
         }),
       ),
-      // Solid buttons: gold fill + white label (readable everywhere).
+      // Solid buttons: primary red + white label.
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: goldDeep,
+          backgroundColor: primary,
           foregroundColor: Colors.white,
           disabledForegroundColor: Colors.white70,
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
@@ -95,56 +110,56 @@ abstract final class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: goldDeep,
+          backgroundColor: primary,
           foregroundColor: Colors.white,
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
         ),
       ),
-      // Transparent buttons on light screens: dark gold text (never white-on-white).
+      // Text buttons on light screens: dark red (never white-on-white).
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: goldDeep,
+          foregroundColor: primary,
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: goldDeep,
-          side: const BorderSide(color: goldDeep),
+          foregroundColor: primary,
+          side: const BorderSide(color: primary),
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
         ),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: goldDeep,
+        backgroundColor: primary,
         foregroundColor: Colors.white,
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           foregroundColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) return Colors.white;
-            return goldDeep;
+            return primary;
           }),
           backgroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) return goldDeep;
+            if (states.contains(WidgetState.selected)) return primary;
             return Colors.white;
           }),
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: goldDeep.withValues(alpha: 0.1),
+        color: primary.withValues(alpha: 0.1),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: goldDeep,
+        backgroundColor: primary,
         contentTextStyle: GoogleFonts.dmSans(color: Colors.white),
       ),
       tabBarTheme: TabBarThemeData(
         labelColor: Colors.white,
         unselectedLabelColor: Colors.white70,
-        indicatorColor: goldBright,
+        indicatorColor: accent,
       ),
       chipTheme: ChipThemeData(
-        selectedColor: goldDeep,
+        selectedColor: primary,
         checkmarkColor: Colors.white,
         labelStyle: GoogleFonts.dmSans(color: ink),
         secondaryLabelStyle: GoogleFonts.dmSans(color: Colors.white),
@@ -153,7 +168,7 @@ abstract final class AppTheme {
   }
 }
 
-/// Warm gold wash behind primary shells.
+/// Soft SSL wash (red / green / gold) behind primary shells.
 class CourtBackdrop extends StatelessWidget {
   const CourtBackdrop({super.key, required this.child});
 
@@ -167,9 +182,10 @@ class CourtBackdrop extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFFFFFCF5),
-            Color(0xFFFFF3D1),
-            Color(0xFFF5E2A8),
+            Color(0xFFFFFBF8),
+            Color(0xFFF5F0D8),
+            Color(0xFFE4F0E6),
+            Color(0xFFF0E0E0),
           ],
         ),
       ),

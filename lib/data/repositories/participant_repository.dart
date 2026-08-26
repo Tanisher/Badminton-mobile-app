@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import '../database/database.dart';
 import 'player_repository.dart';
+import 'ranking_repository.dart';
 import 'tournament_repository.dart';
 
 abstract final class ParticipantType {
@@ -59,6 +60,9 @@ class ParticipantRepository {
     await _assertEventSelected(tournamentId, eventType);
     final player = await _playerOrThrow(playerId);
     _assertPlayerGenderForEvent(eventType, player);
+    if (!SslEligibility.isU19Eligible(player.dateOfBirth)) {
+      throw ParticipantValidationException(SslEligibility.ineligibleMessage);
+    }
     await _assertNotDuplicate(
       tournamentId: tournamentId,
       eventType: eventType,
@@ -101,6 +105,12 @@ class ParticipantRepository {
       throw ParticipantValidationException(
         'This pair is ${pair.eventType}, not $eventType',
       );
+    }
+    final p1 = await _playerOrThrow(pair.player1Id);
+    final p2 = await _playerOrThrow(pair.player2Id);
+    if (!SslEligibility.isU19Eligible(p1.dateOfBirth) ||
+        !SslEligibility.isU19Eligible(p2.dateOfBirth)) {
+      throw ParticipantValidationException(SslEligibility.ineligibleMessage);
     }
     await _assertNotDuplicate(
       tournamentId: tournamentId,

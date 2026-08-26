@@ -124,6 +124,7 @@ class StandingsCandidate {
 
 /// Knockout bracket round name constants.
 abstract final class BracketRound {
+  static const roundOf64 = 'round_of_64';
   static const roundOf32 = 'round_of_32';
   static const roundOf16 = 'round_of_16';
   static const quarterfinal = 'quarterfinal';
@@ -134,6 +135,8 @@ abstract final class BracketRound {
   /// Display order for UI grouping (lower = earlier in bracket).
   static int sortKey(String? round) {
     switch (round) {
+      case roundOf64:
+        return -1;
       case roundOf32:
         return 0;
       case roundOf16:
@@ -153,6 +156,8 @@ abstract final class BracketRound {
 
   static String label(String? round) {
     switch (round) {
+      case roundOf64:
+        return 'Round of 64';
       case roundOf32:
         return 'Round of 32';
       case roundOf16:

@@ -6,6 +6,7 @@ import '../../../data/repositories/player_repository.dart';
 import '../../external_results/screens/player_external_results_screen.dart';
 import '../widgets/add_player_sheet.dart';
 import '../widgets/player_list_tile.dart';
+import 'player_profile_screen.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -91,7 +92,13 @@ class _PlayerTab extends ConsumerWidget {
             return PlayerListTile(
               player: player,
               subtitle: _subtitle(player),
-              onTap: () => showAddPlayerSheet(context, existing: player),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PlayerProfileScreen(playerId: player.id),
+                  ),
+                );
+              },
               onDelete: () => _confirmDelete(context, ref, player),
               onExternal: () {
                 Navigator.of(context).push(

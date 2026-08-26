@@ -23,6 +23,11 @@ final pairsByEventTypeProvider =
   },
 );
 
+final pairsForPlayerProvider =
+    StreamProvider.family<List<IndividualTeamWithPlayers>, int>((ref, playerId) {
+  return ref.watch(individualTeamRepositoryProvider).getPairsForPlayer(playerId);
+});
+
 final competitionTeamsProvider =
     StreamProvider<List<CompetitionTeamSummary>>((ref) {
   return ref.watch(competitionTeamRepositoryProvider).getAllTeams();

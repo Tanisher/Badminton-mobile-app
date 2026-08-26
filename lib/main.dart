@@ -15,7 +15,7 @@ class BadmintonManagerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Badminton Manager',
+      title: 'Super Smash League Manager',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       home: const HomeShell(),

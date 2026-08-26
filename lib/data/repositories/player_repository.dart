@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../database/database.dart';
+import 'ranking_repository.dart';
 
 /// Gender values stored as text (app-layer constraint — not a Drift enum).
 abstract final class PlayerGender {
@@ -26,6 +27,7 @@ class PlayerRepository {
     String? phoneNumber,
   }) {
     _assertGender(gender);
+    _assertU19(dateOfBirth);
     return _db.into(_db.players).insert(
           PlayersCompanion.insert(
             fullName: fullName.trim(),
@@ -74,6 +76,7 @@ class PlayerRepository {
     String? phoneNumber,
   }) async {
     _assertGender(gender);
+    _assertU19(dateOfBirth);
     final rows = await (_db.update(_db.players)..where((t) => t.id.equals(id)))
         .write(
       PlayersCompanion(
@@ -102,6 +105,12 @@ class PlayerRepository {
         'gender',
         "Must be '${PlayerGender.male}' or '${PlayerGender.female}'",
       );
+    }
+  }
+
+  void _assertU19(DateTime dateOfBirth) {
+    if (!SslEligibility.isU19Eligible(dateOfBirth)) {
+      throw ArgumentError(SslEligibility.ineligibleMessage);
     }
   }
 }

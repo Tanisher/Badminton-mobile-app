@@ -48,6 +48,8 @@ dependencies:
   google_fonts: ^8.1.0
   share_plus: ^12.0.2
   file_picker: ^11.0.3
+  pdf: ^3.12.0
+  printing: ^5.14.3
 
 dev_dependencies:
   flutter_test:
@@ -72,21 +74,22 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/branding/badminton_icon.png
+    - assets/branding/ssl_logo.png
 
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: assets/branding/badminton_icon.png
-  adaptive_icon_background: "#C9A227"
-  adaptive_icon_foreground: assets/branding/badminton_icon.png
+  image_path: assets/branding/ssl_logo.png
+  adaptive_icon_background: "#111111"
+  adaptive_icon_foreground: assets/branding/ssl_logo.png
   remove_alpha_ios: true
 
 flutter_native_splash:
-  color: "#C9A227"
-  image: assets/branding/badminton_icon.png
+  color: "#111111"
+  image: assets/branding/ssl_logo.png
   android: true
   ios: true
   android_12:
-    color: "#C9A227"
-    image: assets/branding/badminton_icon.png
+    color: "#111111"
+    image: assets/branding/ssl_logo.png
+
